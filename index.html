@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Radio Sensor NET WebUI</title>
+    <script type="text/javascript" src="/dg/dygraph.js"></script>
+    <link rel="stylesheet" src="/dg/dygraph.css" />
+  </head>
+  <body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <div id="graphdiv3" style="width:1500px; height:900px;"></div>
+    <script>
+        var socket = io();
+        socket.on('dataEvent', function(data) {
+            var array = [];
+            for(var key in data) {
+                array.push([
+                    new Date(parseInt(key)*1000),
+                    parseFloat(data[key])
+                ]);
+            }
+            g3 = new Dygraph(document.getElementById("graphdiv3"), 
+                array,
+                {
+                    drawPoints: true,
+                    showRoller: true,
+                    labels: ['Time', 'Measurement']
+                }
+        )});
+    </script>
+  </body>
+</html>
