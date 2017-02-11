@@ -11,6 +11,16 @@
     <div id="graphdiv3" style="width:1500px; height:900px;"></div>
     <script>
         var socket = io();
+        var g3 = new Dygraph(document.getElementById("graphdiv3"), 
+            [],
+            {
+                dateWindow: [ Date.now() - 60000*60*1, Date.now() ],
+                drawPoints: true,
+                showRoller: true,
+                labels: ['Time', 'Measurement']
+            }
+        )
+
         socket.on('dataEvent', function(data) {
             var array = [];
             for(var key in data) {
@@ -18,16 +28,10 @@
                     new Date(parseInt(key)*1000),
                     parseFloat(data[key])
                 ]);
+                g3.updateOptions( { 'file': array } );
             }
-            g3 = new Dygraph(document.getElementById("graphdiv3"), 
-                array,
-                {
-                    dateWindow: [ Date.now() - 60000*60*1, Date.now() ],
-                    drawPoints: true,
-                    showRoller: true,
-                    labels: ['Time', 'Measurement']
-                }
-        )});
+        });
+
     </script>
   </body>
 </html>
