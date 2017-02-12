@@ -14,7 +14,7 @@
         var g3 = new Dygraph(document.getElementById("graphdiv3"), 
             [],
             {
-                dateWindow: [ Date.now() - 60000*60*1, Date.now() ],
+                dateWindow: [ Date.now() - 60000*60*24, Date.now() ],
                 drawPoints: true,
                 showRoller: true,
                 labels: ['Time', 'Measurement']
@@ -28,8 +28,9 @@
                     new Date(parseInt(key)*1000),
                     parseFloat(data[key])
                 ]);
-                g3.updateOptions( { 'file': array } );
             }
+            alert(array.length);
+            g3.updateOptions( { 'file': array } );
         });
 
     </script>
