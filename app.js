@@ -28,13 +28,23 @@ app.get("/", function(req, res) {
 
 io.on('connection', function(socket) {
     console.log("a user connected");
-    client.hgetallAsync("sensor:23:temperature").then((object) => {
-        console.log(object);
-        socket.emit('dataEvent', object);
-    }).catch((e) => {
-        console.log("error")
-        console.log(e)
-    })
+    client.zrangeAsync("sensors:last_start", 0, 1).then((object) => {
+        var options = {};
+        for(var sid in object)
+        {
+            options[object[sid]] = object[sid];
+        }
+        socket.emit("sensor_list", options);
+    });
+
+    socket.on("data_request", function(data) {
+        client.hgetallAsync("sensor:" + data + ":temperature").then((object) => {
+            socket.emit('data_response', object);
+        }).catch((e) => {
+            console.log("error")
+            console.log(e)
+        });
+    });
 
     socket.on("disconnect", function() {
         console.log("user disconnected");

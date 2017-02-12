@@ -9,6 +9,11 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <div id="graphdiv3" style="width:1500px; height:900px;"></div>
+    <div>
+        <select name="sensor_id" id="sid">
+        </select>
+        <!-- <input type="button" id="modify_view" value="Show" /> -->
+    </div>
     <script>
         var socket = io();
         var g3 = new Dygraph(document.getElementById("graphdiv3"), 
@@ -24,7 +29,21 @@
             }
         )
 
-        socket.on('dataEvent', function(data) {
+        $("#sid").change(function(data) {
+            var sensor = $("#sid").find(":selected").text();
+            socket.emit('data_request', sensor);
+        });
+
+        socket.on('sensor_list', function(data) {
+            $.each(data, function(key, value) {
+                $("#sid")
+                    .append($("<option></option>")
+                    .attr("value", key)
+                    .text(value))
+            });
+        });
+
+        socket.on('data_response', function(data) {
             var array = [];
             for(var key in data) {
                 array.push([
