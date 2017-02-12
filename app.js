@@ -38,7 +38,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on("data_request", function(data) {
-        client.hgetallAsync("sensor:" + data + ":temperature").then((object) => {
+        client.hgetallAsync("sensor:" + data.sid + ":" + data.mid).then((object) => {
             socket.emit('data_response', object);
         }).catch((e) => {
             console.log("error")

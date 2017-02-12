@@ -10,9 +10,16 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <div id="graphdiv3" style="width:1500px; height:900px;"></div>
     <div>
-        <select name="sensor_id" id="sid">
-        </select>
-        <!-- <input type="button" id="modify_view" value="Show" /> -->
+        <form id="type_selection_form" action="">
+            <select name="sensor_id" id="sid">
+            </select>
+            <select name="measurement_id" id="mid">
+                <option value="temperature">temperature</option>
+                <option value="humidity">humidity</option>
+                <option value="voltage">voltage</option>
+            </select>
+            <input type="submit" id="modify_view" value="Show" />
+        </form>
     </div>
     <script>
         var socket = io();
@@ -22,16 +29,24 @@
                 dateWindow: [ Date.now() - 60000*60*24, Date.now() ],
                 //drawPoints: true,
                 fillGraph: true,
-                rollPeriod: 50,
+                //rollPeriod: 50,
                 showRoller: true,
                 showRangeSelector: true,
                 labels: ['Time', 'Measurement']
             }
         )
 
+        /*
         $("#sid").change(function(data) {
+            check_selected_sensor();
+        });
+        */
+
+        $("#type_selection_form").submit(function() {
             var sensor = $("#sid").find(":selected").text();
-            socket.emit('data_request', sensor);
+            var measurement = $("#mid").find(":selected").text();
+            socket.emit('data_request', { "sid": sensor, "mid": measurement });
+            return false;
         });
 
         socket.on('sensor_list', function(data) {
@@ -41,6 +56,9 @@
                     .attr("value", key)
                     .text(value))
             });
+            var sensor = $("#sid").find(":selected").text();
+            var measurement = $("#mid").find(":selected").text();
+            socket.emit('data_request', { "sid": sensor, "mid": measurement });
         });
 
         socket.on('data_response', function(data) {
@@ -51,7 +69,7 @@
                     parseFloat(data[key])
                 ]);
             }
-            g3.updateOptions( { 'file': array } );
+            g3.updateOptions( { 'file': array, dateWindow: [ Date.now() - 60000*60*24, Date.now() ] } );
         });
 
     </script>
