@@ -15,8 +15,11 @@
             [],
             {
                 dateWindow: [ Date.now() - 60000*60*24, Date.now() ],
-                drawPoints: true,
+                //drawPoints: true,
+                fillGraph: true,
+                rollPeriod: 50,
                 showRoller: true,
+                showRangeSelector: true,
                 labels: ['Time', 'Measurement']
             }
         )
@@ -29,7 +32,6 @@
                     parseFloat(data[key])
                 ]);
             }
-            alert(array.length);
             g3.updateOptions( { 'file': array } );
         });
 
