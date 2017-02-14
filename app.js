@@ -7,8 +7,9 @@ var io = require("socket.io")(http);
 var redis = require("redis");
 var bluebird = require("bluebird");
 
-var json2csv = require("json2csv");
 var fields = [ "Date", "measurement" ];
+
+var morgan = require("morgan");
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
@@ -20,6 +21,7 @@ client.onAsync("connect", () => {
 })
 
 app.use("/dg", express.static(path.join(__dirname, "node_modules/dygraphs/dist")));
+app.use(morgan("combined"));
 
 app.get("/", function(req, res) {
     res.sendFile(__dirname + "/index.html");
