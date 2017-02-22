@@ -30,10 +30,9 @@ app.get("/", function(req, res) {
 
 io.on('connection', function(socket) {
     console.log("a user connected");
-    client.zrangeAsync("sensors:last_start", 0, -1).then((object) => {
+    client.smembersAsync("sensors").then((object) => {
         var options = {};
-        for(var sid in object)
-        {
+        for(var sid in object) {
             options[object[sid]] = object[sid];
         }
         socket.emit("sensor_list", options);
