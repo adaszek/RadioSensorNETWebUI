@@ -1,40 +1,53 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
     <title>Radio Sensor NET WebUI</title>
-    <script type="text/javascript" src="/dg/dygraph.js"></script>
     <link rel="stylesheet" src="/dg/dygraph.css" />
-  </head>
-  <body>
-    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <div id="graphdiv3" style="width:1500px; height:900px;"></div>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/dg/dygraph.js"></script>
+</head>
+
+<body>
     <div>
-        <form id="type_selection_form" action="">
-            <select name="sensor_id" id="sid">
-            </select>
-            <select name="measurement_id" id="mid">
-                <option value="temperature">temperature</option>
-                <option value="humidity">humidity</option>
-                <option value="voltage">voltage</option>
-            </select>
-            <input type="submit" id="modify_view" value="Show" />
-        </form>
+        <nav class="navbar navbar-inverse" role="navigation" style="padding-left:130px;">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About us</a></li>
+                <li class="active"><a href="/contact">Contact us<span class="sr-only">(current)</span></a></li>
+            </ul>
+        </nav>
+    </div>
+    <br/>
+    <div class="jumbotron">
+        <div id="graphdiv3" style="width:1500px; height:900px;"></div>
+        <div>
+            <form id="type_selection_form" action="">
+                <select name="sensor_id" id="sid">
+                </select>
+                <select name="measurement_id" id="mid">
+                    <option value="temperature">temperature</option>
+                    <option value="humidity">humidity</option>
+                    <option value="voltage">voltage</option>
+                </select>
+                <input type="submit" id="modify_view" value="Show" />
+            </form>
+        </div>
     </div>
     <script>
         var socket = io();
-        var g3 = new Dygraph(document.getElementById("graphdiv3"), 
-            [],
-            {
-                dateWindow: [ Date.now() - 60000*60*24, Date.now() ],
-                //drawPoints: true,
-                fillGraph: true,
-                //rollPeriod: 50,
-                showRoller: true,
-                showRangeSelector: true,
-                labels: ['Time', 'Measurement']
-            }
-        )
+        var g3 = new Dygraph(document.getElementById("graphdiv3"), [], {
+            dateWindow: [Date.now() - 60000 * 60 * 24, Date.now()],
+            //drawPoints: true,
+            fillGraph: true,
+            //rollPeriod: 5,
+            //showRoller: true,
+            //showRangeSelector: true,
+            labels: ['Time', 'Measurement']
+        })
 
         /*
         $("#sid").change(function(data) {
@@ -45,7 +58,10 @@
         $("#type_selection_form").submit(function() {
             var sensor = $("#sid").find(":selected").text();
             var measurement = $("#mid").find(":selected").text();
-            socket.emit('data_request', { "sid": sensor, "mid": measurement });
+            socket.emit('data_request', {
+                "sid": sensor,
+                "mid": measurement
+            });
             return false;
         });
 
@@ -53,25 +69,31 @@
             $.each(data, function(key, value) {
                 $("#sid")
                     .append($("<option></option>")
-                    .attr("value", key)
-                    .text(value))
+                        .attr("value", key)
+                        .text(value))
             });
             var sensor = $("#sid").find(":selected").text();
             var measurement = $("#mid").find(":selected").text();
-            socket.emit('data_request', { "sid": sensor, "mid": measurement });
+            socket.emit('data_request', {
+                "sid": sensor,
+                "mid": measurement
+            });
         });
 
         socket.on('data_response', function(data) {
             var array = [];
-            for(var key in data) {
+            for (var key in data) {
                 array.push([
-                    new Date(parseInt(key)*1000),
+                    new Date(parseInt(key) * 1000),
                     parseFloat(data[key])
                 ]);
             }
-            g3.updateOptions( { 'file': array, dateWindow: [ Date.now() - 60000*60*24, Date.now() ] } );
+            g3.updateOptions({
+                'file': array,
+                dateWindow: [Date.now() - 60000 * 60 * 24, Date.now()]
+            });
         });
-
     </script>
-  </body>
+</body>
+
 </html>
