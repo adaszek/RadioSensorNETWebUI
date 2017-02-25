@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET devices listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.render('devices', { title: 'Devices' });
 });
 
 module.exports = router;
