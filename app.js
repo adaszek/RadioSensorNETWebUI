@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
+var device = require('./routes/device');
 var devices = require('./routes/devices');
 var locations = require('./routes/locations');
 
@@ -22,8 +23,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/dg", express.static(path.join(__dirname, "node_modules/dygraphs/dist")));
+app.use("/socket.io", express.static(path.join(__dirname, "node_modules/socket.io-client/dist")));
 
 app.use('/', index);
+app.use('/device', device);
 app.use('/devices', devices);
 app.use('/locations', locations);
 

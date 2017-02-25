@@ -1,8 +1,10 @@
 extends layout.pug
 
 block append styles
+    link(rel="stylesheet" src="/dg/dygraph.css")
 
 block append scripts
+    script(type="text/javascript" src="/dg/dygraph.js")
     script(src="/socket.io/socket.io.js")
 
 block content
