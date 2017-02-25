@@ -9,8 +9,15 @@ block append scripts
 
 block content
     .row
-        .col-md-2
-        .col-md-10
+        .col-md-1
+            ul(class="nav nav-pills nav-stacked")
+                li(role="presentation" class="active")
+                    a(href="#") Temperature
+                li(role="presentation")
+                    a(href="#") Humidity
+                li(role="presentation")
+                    a(href="#") Voltage
+        .col-md-11
             div(id="graphdiv3" style="width: 100%;")
             div
                 form(class="form-inline" id="type_selection_form" action="")
