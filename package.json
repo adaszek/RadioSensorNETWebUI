@@ -1,20 +1,17 @@
 {
-  "name": "radio_sensor_net",
-  "version": "0.0.2",
-  "description": "WebUI for network of radio sensors.",
-  "main": "app.js",
-  "dependencies": {
-    "bluebird": "^3.4.7",
-    "dygraphs": "^2.0.0",
-    "express": "^4.14.1",
-    "morgan": "^1.8.1",
-    "redis": "^2.6.5",
-    "socket.io": "^1.7.2"
-  },
-  "devDependencies": {},
+  "name": "web-ui",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "body-parser": "~1.16.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.0",
+    "express": "~4.14.1",
+    "morgan": "~1.7.0",
+    "pug": "~2.0.0-beta10",
+    "serve-favicon": "~2.3.2"
+  }
 }

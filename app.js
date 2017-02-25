@@ -1,58 +1,46 @@
-var express  = require("express");
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+
+var index = require('./routes/index');
+var users = require('./routes/users');
+
 var app = express();
-var path = require("path");
 
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
-var redis = require("redis");
-var bluebird = require("bluebird");
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
-var fields = [ "Date", "measurement" ];
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-var morgan = require("morgan");
+app.use('/', index);
+app.use('/users', users);
 
-bluebird.promisifyAll(redis.RedisClient.prototype);
-bluebird.promisifyAll(redis.Multi.prototype);
-
-var client = redis.createClient(6379, "192.168.1.158")
-
-client.onAsync("connect", () => {
-    console.log("connected")
-})
-
-app.use("/dg", express.static(path.join(__dirname, "node_modules/dygraphs/dist")));
-app.use(morgan("combined"));
-
-app.get("/", function(req, res) {
-    res.sendFile(__dirname + "/index.html");
-
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
-io.on('connection', function(socket) {
-    console.log("a user connected");
-    client.smembersAsync("sensors").then((object) => {
-        var options = {};
-        for(var sid in object) {
-            options[object[sid]] = object[sid];
-        }
-        socket.emit("sensor_list", options);
-    });
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-    socket.on("data_request", function(data) {
-        client.hgetallAsync("sensor:" + data.sid + ":" + data.mid).then((object) => {
-            socket.emit('data_response', object);
-        }).catch((e) => {
-            console.log("error")
-            console.log(e)
-        });
-    });
-
-    socket.on("disconnect", function() {
-        console.log("user disconnected");
-    });
-    
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
-http.listen(3000, function() {
-    console.log("listening on *:3000");
-});
+module.exports = app;
