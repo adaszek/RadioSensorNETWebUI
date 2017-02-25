@@ -8,6 +8,10 @@ block append scripts
     script(src="/socket.io/socket.io.js")
 
 block content
+    script(src="/javascripts/get_device_data.js")
+    script.
+        get_data(#{deviceId});
+
     .row
         .col-md-12
             ul(class="nav nav-pills")
@@ -32,4 +36,3 @@ block content
                             option(value="humidity") humidity
                             option(value="voltage") voltage
                     input(type="submit" id="modify_view" value="Show" class="btn btn-primary")
-    script(src="/javascripts/get_device_data.js")
