@@ -8,45 +8,49 @@ block append scripts
 block content
     .row
         .col-md-12
-            .table-responsive
-                table(class="table table-hover")
-                    thead
-                        tr
-                            th #
-                            td Device ID
-                            td Device name
-                            td Location
-                            td Provided functions
-                            td Last active
-                            td Status
-                    tbody
-                        tr
-                            th(scope="row") 1
-                            td
-                                a(href="/device/211") 211
-                            td unnamed
-                            td biuro
-                            td temperature; humidity; voltage
-                            td 34 seconds ago
-                            td
-                                span(class="label label-success") Ok
-                        tr
-                            th(scope="row") 2
-                            td
-                                a(href="/device/2") 2
-                            td unnamed
-                            td biuro
-                            td temperature; humidity; voltage
-                            td 34 seconds ago
-                            td
-                                span(class="label label-danger") Error
-                        tr
-                            th(scope="row") 3
-                            td
-                                a(href="/device/87") 87
-                            td unnamed
-                            td biuro
-                            td temperature; humidity; voltage
-                            td 34 seconds ago
-                            td
-                                span(class="label label-default") Offline
+            table(class="table table-hover")
+                thead
+                    tr
+                        th #
+                        td Device ID
+                        td Location
+                        td Provided functions
+                        td Last active
+                        td Status
+                tbody
+                    tr
+                        th(scope="row") 1
+                        td 211
+                        td biuro
+                        td 
+                            ul
+                                li: a(href="/device/211/temperature") temperature                            
+                                li: a(href="/device/211/humidity") humidity                            
+                                li: a(href="/device/211/voltage") voltage                            
+                        td 34 seconds ago
+                        td
+                            span(class="label label-success") Ok
+                    tr
+                        th(scope="row") 2
+                        td 2
+                        td biuro
+                        td 
+                            ul
+                                li: a(href="/device/2/temperature") temperature                            
+                                li: a(href="/device/2/humidity") humidity                            
+                                li: a(href="/device/2/voltage") voltage                            
+                        td 34 seconds ago
+                        td
+                            span(class="label label-danger") Error
+                    tr
+                        th(scope="row") 3
+                        td 87
+                        td biuro
+                        td 
+                            ul
+                                li: a(href="/device/87/temperature") temperature                            
+                                li: a(href="/device/87/humidity") humidity                            
+                                li: a(href="/device/87/voltage") voltage                            
+                        td 34 seconds ago
+                        td
+                            span(class="label label-default") Offline

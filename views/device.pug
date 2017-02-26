@@ -11,7 +11,7 @@ mixin measurement_menu_element(measurement, actual, text)
 
 
 block append styles
-    link(rel="stylesheet" src="/dg/dygraph.css")
+    link(rel="stylesheet" href="/dg/dygraph.css")
 
 block append scripts
     script(type="text/javascript" src="/dg/dygraph.js")
@@ -23,6 +23,9 @@ block content
         $(document).ready( () => {
             ask_for_data(socket, #{device_id}, '#{measurement_id}');
         });
+    .sensor_info
+        h4: b Sensor #{device_id}
+        p Location: biuro
     .row
         .col-md-12
             ul(class="nav nav-pills")
@@ -31,4 +34,5 @@ block content
                 +measurement_menu_element("voltage", measurement_id, "Voltage")
     .row
         .col-md-12
-            div(id="graphdiv3" style="width: 100%;")
+            br
+            div(id="graphdiv3" style="width: 100%")

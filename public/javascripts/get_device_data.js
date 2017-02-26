@@ -13,14 +13,15 @@ function ask_for_data(socket, sensor_id, measurement_id) {
 }
 
 $(document).ready(function () {
-    socket = io("http://localhost:3000");
+    socket = io("http://192.168.1.111:3000");
 
     var g3 = new Dygraph(document.getElementById("graphdiv3"), [], {
         dateWindow: [Date.now() - 60000 * 60 * 2, Date.now()],
         //drawPoints: true,
+        legend: "follow",
         fillGraph: true,
-        //rollPeriod: 5,
-        //showRoller: true,
+        rollPeriod: 5,
+        showRoller: true,
         //showRangeSelector: true,
         labels: ['Time', 'Measurement']
     })
