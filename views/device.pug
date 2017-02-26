@@ -1,5 +1,15 @@
 extends layout.pug
 
+mixin measurement_menu_element(measurement, actual, text)
+    if measurement == actual
+        li(role="presentation" class="active")
+            a(href="../../device/" + device_id + "/" + measurement)= text
+    else
+        li(role="presentation")
+            a(href="../../device/" + device_id + "/" + measurement)= text
+
+
+
 block append styles
     link(rel="stylesheet" src="/dg/dygraph.css")
 
@@ -10,29 +20,15 @@ block append scripts
 block content
     script(src="/javascripts/get_device_data.js")
     script.
-        get_data(#{deviceId});
-
+        $(document).ready( () => {
+            ask_for_data(socket, #{device_id}, '#{measurement_id}');
+        });
     .row
         .col-md-12
             ul(class="nav nav-pills")
-                li(role="presentation" class="active")
-                    a(href="#") Temperature
-                li(role="presentation")
-                    a(href="#") Humidity
-                li(role="presentation")
-                    a(href="#") Voltage
+                +measurement_menu_element("temperature", measurement_id, "Temperature")
+                +measurement_menu_element("humidity", measurement_id, "Humidity")
+                +measurement_menu_element("voltage", measurement_id, "Voltage")
     .row
         .col-md-12
             div(id="graphdiv3" style="width: 100%;")
-            div
-                form(class="form-inline" id="type_selection_form" action="")
-                    .form-group
-                        label(for="sensor_id") Sensor ID
-                        select(class="form-control" name="sensor_id" id="sid")
-                    .form-group
-                        label(for="measurement_id") Measurement ID
-                        select(class="form-control" name="measurement_id" id="mid")
-                            option(value="temperature") temperature
-                            option(value="humidity") humidity
-                            option(value="voltage") voltage
-                    input(type="submit" id="modify_view" value="Show" class="btn btn-primary")

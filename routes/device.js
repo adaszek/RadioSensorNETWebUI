@@ -16,6 +16,7 @@ module.exports = function(io) {
     io.on('connection', function(socket) {
         console.log("a user connected");
 
+        /*
         client.smembersAsync("sensors").then((object) => {
             var options = {};
             for(var sid in object) {
@@ -23,6 +24,7 @@ module.exports = function(io) {
             }
             socket.emit("sensor_list", options);
         });
+        */
 
         socket.on("data_request", function(data) {
             client.hgetallAsync("sensor:" + data.sid + ":" + data.mid).then((object) => {
@@ -40,10 +42,11 @@ module.exports = function(io) {
     });
 
     /* GET devices listing. */
-    router.get('/:deviceId', function(req, res, next) {
+    router.get('/:device_id/:measurement_id', function(req, res, next) {
         res.render('device', {
             title: 'Devices',
-            deviceId: req.params.deviceId
+            device_id: req.params.device_id,
+            measurement_id: req.params.measurement_id
         });
     });
 

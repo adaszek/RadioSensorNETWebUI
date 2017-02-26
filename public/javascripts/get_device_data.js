@@ -3,12 +3,17 @@ $("#sid").change(function(data) {
     check_selected_sensor();
 });
 */
-function get_data(param) {
-    alert(param);
+var socket;
+
+function ask_for_data(socket, sensor_id, measurement_id) {
+    socket.emit('data_request', {
+        "sid": sensor_id,
+        "mid": measurement_id
+    });
 }
 
 $(document).ready(function () {
-    var socket = io("http://localhost:3000");
+    socket = io("http://localhost:3000");
 
     var g3 = new Dygraph(document.getElementById("graphdiv3"), [], {
         dateWindow: [Date.now() - 60000 * 60 * 2, Date.now()],
@@ -21,12 +26,6 @@ $(document).ready(function () {
     })
 
 
-    function ask_for_data(sensor_id, measurement_id) {
-        socket.emit('data_request', {
-            "sid": sensor_id,
-            "mid": measurement_id
-        });
-    }
 
     $("#type_selection_form").submit(function() {
         var sensor = $("#sid").find(":selected").text();
