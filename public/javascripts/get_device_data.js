@@ -26,8 +26,6 @@ $(document).ready(function () {
         labels: ['Time', 'Measurement']
     })
 
-
-
     $("#type_selection_form").submit(function() {
         var sensor = $("#sid").find(":selected").text();
         var measurement = $("#mid").find(":selected").text();
