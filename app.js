@@ -12,7 +12,7 @@ app.io = io;
 
 var index = require('./routes/index');
 var device = require('./routes/device')(io);
-var devices = require('./routes/devices');
+var devices = require('./routes/devices')();
 var locations = require('./routes/locations');
 
 // view engine setup
