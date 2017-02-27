@@ -43,11 +43,17 @@ module.exports = function(io) {
 
     /* GET devices listing. */
     router.get('/:device_id/:measurement_id', function(req, res, next) {
-        res.render('device', {
-            title: 'Devices',
-            device_id: req.params.device_id,
-            measurement_id: req.params.measurement_id
-        });
+        client.smembersAsync("sensors").then((data) => {
+            if (data.indexOf(req.params.device_id) != -1) {
+                res.render('device', {
+                    title: 'Devices',
+                    device_id: req.params.device_id,
+                    measurement_id: req.params.measurement_id
+                });
+            } else {
+                next("route");
+            }
+        })
     });
 
     return router;
