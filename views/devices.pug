@@ -11,53 +11,15 @@ block append scripts
 block content
     script.
         $(document).ready(() => {
-            $("#table1").DataTable();
+            $("#table1").DataTable({
+                "ajax": "/devices/api"
+            });
         });
     .row
         .col-md-12
-            table(id="table1" class="table table-striped table-bordered" width="100%" cellspacing="0")
+            table(id="table1" class="table table-hover table-bordered" width="100%" cellspacing="0")
                 thead
                     tr
-                        th #
                         td Device ID
-                        td Location
                         td Provided functions
-                        td Last active
-                        td Status
-                tbody
-                    tr
-                        th(scope="row") 1
-                        td 211
-                        td biuro
-                        td 
-                            ul
-                                li: a(href="/device/211/temperature") temperature                            
-                                li: a(href="/device/211/humidity") humidity                            
-                                li: a(href="/device/211/voltage") voltage                            
-                        td 34 seconds ago
-                        td
-                            span(class="label label-success") Ok
-                    tr
-                        th(scope="row") 2
-                        td 2
-                        td biuro
-                        td 
-                            ul
-                                li: a(href="/device/2/temperature") temperature                            
-                                li: a(href="/device/2/humidity") humidity                            
-                                li: a(href="/device/2/voltage") voltage                            
-                        td 34 seconds ago
-                        td
-                            span(class="label label-danger") Error
-                    tr
-                        th(scope="row") 3
-                        td 87
-                        td biuro
-                        td 
-                            ul
-                                li: a(href="/device/87/temperature") temperature                            
-                                li: a(href="/device/87/humidity") humidity                            
-                                li: a(href="/device/87/voltage") voltage                            
-                        td 34 seconds ago
-                        td
-                            span(class="label label-default") Offline
+                        td Location

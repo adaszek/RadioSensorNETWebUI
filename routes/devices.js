@@ -26,16 +26,24 @@ module.exports = () => {
             .hgetall("sensors:last_location")
             .execAsync()
             .then((data) => {
+                var return_array = [];
                 for(var i in data[0]) {
-                    console.log(data[0][i]);
+                    var row = [];
+                    row.push(data[0][i]);
+
                     if (data[1].hasOwnProperty(data[0][i])) {
-                        console.log(data[1][data[0][i]]);
+                        row.push(data[1][data[0][i]]);
+                    } else {
+                        row.push("unknown");
                     }
                     if (data[2].hasOwnProperty(data[0][i])) {
-                        console.log(data[2][data[0][i]]);
+                        row.push(data[2][data[0][i]]);
+                    } else {
+                        row.push("unknown");
                     }
+                    return_array.push(row);
                 }
-                res.send(data);
+                res.send({ data: return_array });
             });
     });
 
