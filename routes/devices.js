@@ -19,18 +19,24 @@ module.exports = () => {
     });
 
     router.get('/api', function(req, res, next) {
-        //TODO: WATCH for reading
-        //TODO: chain of promises
-        var p1 = client.smembersAsync("sensors").then((data) => {
-            return data;
-        });
-        var p2 = client.hgetallAsync("sensors:functions").then((data) => {
-            return data;
-        });
-        
-        Promise.all([p1, p2]).then((results) => {
-            res.send(results);
-        });
+        client
+            .multi()
+            .smembers("sensors")
+            .hgetall("sensors:functions")
+            .hgetall("sensors:last_location")
+            .execAsync()
+            .then((data) => {
+                for(var i in data[0]) {
+                    console.log(data[0][i]);
+                    if (data[1].hasOwnProperty(data[0][i])) {
+                        console.log(data[1][data[0][i]]);
+                    }
+                    if (data[2].hasOwnProperty(data[0][i])) {
+                        console.log(data[2][data[0][i]]);
+                    }
+                }
+                res.send(data);
+            });
     });
 
     return router;
