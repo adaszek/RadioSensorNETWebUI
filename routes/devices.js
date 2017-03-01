@@ -32,7 +32,14 @@ module.exports = () => {
                     row.push(data[0][i]);
 
                     if (data[1].hasOwnProperty(data[0][i])) {
-                        row.push(data[1][data[0][i]]);
+                        var to_parse = data[1][data[0][i]];
+                        var temp_split = to_parse.split(";");
+                        var temp_object = {};
+                        for(var param in temp_split) {
+                            var arg_and_value = temp_split[param].split(":");
+                            temp_object[arg_and_value[0]] = arg_and_value[1];
+                        }
+                        row.push(temp_object);
                     } else {
                         row.push("unknown");
                     }

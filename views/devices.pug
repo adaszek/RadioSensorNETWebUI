@@ -12,7 +12,13 @@ block content
     script.
         $(document).ready(() => {
             $("#table1").DataTable({
-                "ajax": "/devices/api"
+                "ajax": "/devices/api",
+                "createdRow": (row, data, index) => {
+                    if (data[1] !== "unknown") {
+                        $("td", row).eq(1).empty();
+                        $("td", row).eq(1).append(JSON.stringify(data[1]));
+                    }
+                }
             });
         });
     .row
