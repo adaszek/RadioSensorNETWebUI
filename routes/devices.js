@@ -24,8 +24,10 @@ module.exports = () => {
             .smembers("sensors")
             .hgetall("sensors:functions")
             .hgetall("sensors:last_location")
+            .hgetall("functions")
             .execAsync()
             .then((data) => {
+                console.log(data);
                 var return_array = [];
                 for(var i in data[0]) {
                     var row = [];
@@ -35,9 +37,20 @@ module.exports = () => {
                         var to_parse = data[1][data[0][i]];
                         var temp_split = to_parse.split(";");
                         var temp_object = {};
-                        for(var param in temp_split) {
+                        for (var param in temp_split) {
                             var arg_and_value = temp_split[param].split(":");
+                            if (arg_and_value[0] === "r" || arg_and_value[0] === "w") {
+                                var properties = arg_and_value[1].split(",");
+                                var result = [];
+                                if(properties.length > 1) {
+                                    result = properties.map((x) => {
+                                    return data[3][x];
+                                    });
+                                }
+                                temp_object[arg_and_value[0]] = result;
+                            } else {
                             temp_object[arg_and_value[0]] = arg_and_value[1];
+                            }
                         }
                         row.push(temp_object);
                     } else {
@@ -48,8 +61,10 @@ module.exports = () => {
                     } else {
                         row.push("unknown");
                     }
+
                     return_array.push(row);
                 }
+                console.log(JSON.stringify(return_array));
                 res.send({ data: return_array });
             });
     });

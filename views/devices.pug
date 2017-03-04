@@ -17,51 +17,30 @@ block content
                     if (data[1] !== "unknown") {
                         $("td", row).eq(1).empty();
                         var div = $("<div class=\"btn-group\" role=\"group\" aria-label=\"...\" />").appendTo($("td", row).eq(1));
+
+                        if (data[1]["s"] !== 0) {
+                            div.append("<button class=\"btn btn-default disabled\" > Reporting period: " + data[1]["s"] + " s</button>");
+
+                        }
+
                         if (data[1]["r"] !== 0) {
-                            var reads_abr = data[1]["r"].split(",");
-                            var reads = [];
-                            //TODO: make it dynamic - read from DB
-                            for (var i in reads_abr) {
-                                switch(reads_abr[i]) {
-                                    case "t":
-                                        reads.push("temperature");
-                                        break;
-                                    case "h":
-                                        reads.push("humidity");
-                                        break;
-                                    case "v":
-                                        reads.push("voltage");
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
+                            var reads = data[1]["r"];
 
                             for (var i in reads) {
                                 div.append("<a role=\"button\" class=\"btn btn-success\" href=\"/device/" + data[0] + "/" + reads[i] + "\">" + reads[i] + "</a>");
                             }
                         }
-
-                        //TODO: should be !== - it's just workaround
-                        if (data[1]["w"] == 0) {
-                            //var writes_abr = data[1]["w"].split(",");
-                            var writes_abr = ["s"];
-                            var writes = [];
-                            //TODO: make it dynamic - read from DB
-                            for (var i in writes_abr) {
-                                switch(writes_abr[i]) {
-                                    case "s":
-                                        writes.push("switch");
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
+                        //TODO: should be !=
+                        if (data[1]["w"].length == 0) {
+                            //var writes = data[1]["w"];
+                            var writes = ["switch"];
 
                             for (var i in writes) {
                                 div.append("<a role=\"button\" class=\"btn btn-info\" href=\"/device/" + data[0] + "/" + writes[i] + "\">" + writes[i] + "</a>");
                             }
                         }
+
+
                     }
                 }
             });
@@ -76,3 +55,4 @@ block content
                         td Device ID
                         td Provided functions
                         td Location
+                        td Last Activity
