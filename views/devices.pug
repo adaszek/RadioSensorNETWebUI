@@ -14,7 +14,7 @@ block content
             var table = $("#table1").DataTable({
                 "ajax": "/devices/api",
                 "createdRow": (row, data, index) => {
-                    if (data[1] !== "unknown") {
+                    if (data[1] != null) {
                         $("td", row).eq(1).empty();
                         var div = $("<div class=\"btn-group\" role=\"group\" aria-label=\"...\" />").appendTo($("td", row).eq(1));
 
@@ -55,3 +55,4 @@ block content
                         td Device ID
                         td Provided functions
                         td Location
+                        td Last activity

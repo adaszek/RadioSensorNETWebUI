@@ -1,25 +1,68 @@
 var bluebird = require("bluebird");
 
+function parse_capabilities(to_parse, array_of_cap) {
+    var temp_object = {};
+    var temp_split = to_parse.split(";");
+    for (var param in temp_split) {
+        var arg_and_value = temp_split[param].split(":");
+        if (arg_and_value[0] === "r" || arg_and_value[0] === "w") {
+            var properties = arg_and_value[1].split(",");
+            var result = [];
+            if(properties.length > 1) {
+                result = properties.map((x) => {
+                    return array_of_cap[x];
+                });
+            }
+            temp_object[arg_and_value[0]] = result;
+        } else {
+            temp_object[arg_and_value[0]] = arg_and_value[1];
+        }
+    }
+    return temp_object;
+}
+
 function get_latest_activity(redis_client) {
     return redis_client
         .multi()
         .smembers("sensors")
+        .hgetall("sensors:functions")
         .hgetall("functions")
         .execAsync()
         .then(data => {
-            return data;
-            /*
-            var funct = [];
-            for (var i in data) {
-                funct.push(data[i]);
+            var funct = []
+            for (var sid in data[0]) {
+                if (data[0][sid] in data[1]) {
+                    var cap = parse_capabilities(data[1][data[0][sid]], data[2]);
+                    for (var fid in cap["r"]) {
+                        funct.push([data[0][sid], "sensor:" + data[0][sid] + ":" + cap["r"][fid]]);
+                    }
+                    for (var fid in cap["w"]) {
+                        funct.push([data[0][sid], "sensor:" + data[0][sid] + ":" + cap["w"][fid]]);
+                    }
+                }
             }
-            var sid = "sensor:" + sensor_id + ":";
 
             return bluebird.map(funct, (func) => {
-                return redis
-                    .zrangeAsync(sid + func + ":timestamps", -1, -1);
-            });
-            */
+                return redis_client
+                    .zrangeAsync(func[1] + ":timestamps", -1, -1)
+                    .then(timestamp => {
+                        return new Date(parseInt(timestamp) * 1000);
+                    })
+                    .then(timestamp => {
+                        return [func[0], timestamp];
+                    });
+                })
+                .then(latest_activities => {
+                    var latest_activity = {};
+                    for (var activity in latest_activities) {
+                        if (!(latest_activities[activity][0] in latest_activity)) {
+                            latest_activity[latest_activities[activity][0]] = latest_activities[activity][1];
+                        } else if (latest_activity[latest_activities[activity][0]].getTime() < latest_activities[activity][1].getTime()) {
+                            latest_activity[latest_activities[activity][0]] = latest_activities[activity][1];
+                        }
+                    }
+                    return latest_activity;
+                });
         });
 }
 
@@ -37,33 +80,15 @@ function get_init_data(redis_client) {
                 var row = [];
                 row.push(data[0][i]);
 
-                if (data[1].hasOwnProperty(data[0][i])) {
-                    var to_parse = data[1][data[0][i]];
-                    var temp_split = to_parse.split(";");
-                    var temp_object = {};
-                    for (var param in temp_split) {
-                        var arg_and_value = temp_split[param].split(":");
-                        if (arg_and_value[0] === "r" || arg_and_value[0] === "w") {
-                            var properties = arg_and_value[1].split(",");
-                            var result = [];
-                            if(properties.length > 1) {
-                                result = properties.map((x) => {
-                                return data[3][x];
-                                });
-                            }
-                            temp_object[arg_and_value[0]] = result;
-                        } else {
-                            temp_object[arg_and_value[0]] = arg_and_value[1];
-                        }
-                    }
-                    row.push(temp_object);
+                if (data[0][i] in data[1]) {
+                    row.push(parse_capabilities(data[1][data[0][i]], data[3]));
                 } else {
-                    row.push("unknown");
+                    row.push(null);
                 }
                 if (data[2].hasOwnProperty(data[0][i])) {
                     row.push(data[2][data[0][i]]);
                 } else {
-                    row.push("unknown");
+                    row.push(null);
                 }
 
                 return_array.push(row);
@@ -90,16 +115,18 @@ module.exports = () => {
         console.log("connected")
     })
 
-    /* GET devices listing. */
     router.get('/', function(req, res, next) {
         res.render('devices', { title: 'Devices' });
     });
 
     router.get('/api', function(req, res, next) {
-        get_init_data(client).then(init_data => {
-            get_latest_activity(client).then(latest_activity => {
-                console.log(latest_activity);
-            });
+        bluebird.join(get_init_data(client), get_latest_activity(client), (init_data, latest_activity) => {
+            for(sid in latest_activity) {
+                var row = init_data.find((element, index) => {
+                    return element[0] === sid ;
+                });
+                row.push(latest_activity[sid])
+            }
             res.send({ data: init_data });
         });
     });
