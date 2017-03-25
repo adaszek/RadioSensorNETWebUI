@@ -1,4 +1,5 @@
 var bluebird = require("bluebird");
+var moment = require("moment")
 
 function parse_capabilities(to_parse, array_of_cap) {
     var temp_object = {};
@@ -26,7 +27,8 @@ function get_latest_activity(redis_client) {
         .hgetallAsync("sensors:last_activity")
         .then(data => {
             for(var key in data) {
-                data[key] = new Date(parseInt(data[key]) * 1000);
+                //data[key] = new Date(parseInt(data[key]) * 1000);
+                data[key] = moment((parseInt(data[key]) * 1000));
             }
             return data;
         });
