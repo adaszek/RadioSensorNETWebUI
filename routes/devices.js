@@ -53,6 +53,7 @@ function get_latest_activity(redis_client) {
                     });
                 })
                 .then(latest_activities => {
+                    //Reduce
                     var latest_activity = {};
                     for (var activity in latest_activities) {
                         if (!(latest_activities[activity][0] in latest_activity)) {
