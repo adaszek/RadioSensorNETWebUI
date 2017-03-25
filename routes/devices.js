@@ -23,47 +23,12 @@ function parse_capabilities(to_parse, array_of_cap) {
 
 function get_latest_activity(redis_client) {
     return redis_client
-        .multi()
-        .smembers("sensors")
-        .hgetall("sensors:functions")
-        .hgetall("functions")
-        .execAsync()
+        .hgetallAsync("sensors:last_activity")
         .then(data => {
-            var funct = []
-            for (var sid in data[0]) {
-                if (data[0][sid] in data[1]) {
-                    var cap = parse_capabilities(data[1][data[0][sid]], data[2]);
-                    for (var fid in cap["r"]) {
-                        funct.push([data[0][sid], "sensor:" + data[0][sid] + ":" + cap["r"][fid]]);
-                    }
-                    for (var fid in cap["w"]) {
-                        funct.push([data[0][sid], "sensor:" + data[0][sid] + ":" + cap["w"][fid]]);
-                    }
-                }
+            for(var key in data) {
+                data[key] = new Date(parseInt(data[key]) * 1000);
             }
-
-            return bluebird.map(funct, (func) => {
-                return redis_client
-                    .zrangeAsync(func[1] + ":timestamps", -1, -1)
-                    .then(timestamp => {
-                        return new Date(parseInt(timestamp) * 1000);
-                    })
-                    .then(timestamp => {
-                        return [func[0], timestamp];
-                    });
-                })
-                .then(latest_activities => {
-                    //Reduce
-                    var latest_activity = {};
-                    for (var activity in latest_activities) {
-                        if (!(latest_activities[activity][0] in latest_activity)) {
-                            latest_activity[latest_activities[activity][0]] = latest_activities[activity][1];
-                        } else if (latest_activity[latest_activities[activity][0]].getTime() < latest_activities[activity][1].getTime()) {
-                            latest_activity[latest_activities[activity][0]] = latest_activities[activity][1];
-                        }
-                    }
-                    return latest_activity;
-                });
+            return data;
         });
 }
 
@@ -122,7 +87,7 @@ module.exports = () => {
 
     router.get('/api', function(req, res, next) {
         bluebird.join(get_init_data(client), get_latest_activity(client), (init_data, latest_activity) => {
-            for(sid in latest_activity) {
+            for(var sid in latest_activity) {
                 var row = init_data.find((element, index) => {
                     return element[0] === sid ;
                 });
