@@ -7,12 +7,11 @@ block append scripts
     script(type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js")
     script(type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js")
     script(type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js")
-    script(src="/socket.io/socket.io.js")
 
 block content
     script.
         $(document).ready(() => {
-            var table = $("#table1").DataTable({
+            $("#table1").DataTable({
                 "ajax": "/devices/api",
                 "createdRow": (row, data, index) => {
                     if (data[1] != null) {
@@ -31,10 +30,9 @@ block content
                                 div.append("<a role=\"button\" class=\"btn btn-success\" href=\"/device/" + data[0] + "/" + reads[i] + "\">" + reads[i] + "</a>");
                             }
                         }
-                        //TODO: should be !=
-                        if (data[1]["w"].length == 0) {
-                            //var writes = data[1]["w"];
-                            var writes = ["switch"];
+                        //TODO: implement possibility to control devices from webui
+                        if (data[1]["w"].length != 0) {
+                            var writes = data[1]["w"];
 
                             for (var i in writes) {
                                 div.append("<a role=\"button\" class=\"btn btn-info\" href=\"/device/" + data[0] + "/" + writes[i] + "\">" + writes[i] + "</a>");
@@ -42,8 +40,18 @@ block content
                         }
                         
                         var activity = $("td", row).eq(3);
+                        var last_measurement_time = moment(data[3])
+                        var time_from_last_activity = last_measurement_time.fromNow()
                         activity.empty()
-                        activity.append(moment(data[3]).fromNow())
+                        activity.append(time_from_last_activity)
+
+                        var status = $("td", row).eq(4);
+                        status.empty()
+                        if (last_measurement_time.diff(moment(), "hours") < -1) {
+                            status.append("<span class=\"label label-danger\">Inactive</span>");
+                        } else {
+                            status.append("<span class=\"label label-success\">Ok</span>");
+                        }
                     
                         $("#table1").dataTable().api().rows().invalidate("dom").draw();
 
@@ -51,11 +59,7 @@ block content
                 }
             });
             (() => {
-                function redraw(table) {
-                    table.ajax.reload();
-                }
-
-                setInterval(redraw, 5000);
+                setInterval($("#table1").dataTable().api().ajax.reload, 5000);
             })();
             
         });
@@ -68,3 +72,4 @@ block content
                         td Provided functions
                         td Location
                         td Last activity
+                        td Status

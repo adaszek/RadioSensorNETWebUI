@@ -27,7 +27,6 @@ function get_latest_activity(redis_client) {
         .hgetallAsync("sensors:last_activity")
         .then(data => {
             for(var key in data) {
-                //data[key] = new Date(parseInt(data[key]) * 1000);
                 data[key] = moment((parseInt(data[key]) * 1000));
             }
             return data;
@@ -91,9 +90,10 @@ module.exports = () => {
         bluebird.join(get_init_data(client), get_latest_activity(client), (init_data, latest_activity) => {
             for(var sid in latest_activity) {
                 var row = init_data.find((element, index) => {
-                    return element[0] === sid ;
+                    return element[0] === sid;
                 });
-                row.push(latest_activity[sid])
+                row.push(latest_activity[sid]);
+                row.push("status");
             }
             res.send({ data: init_data });
         });
