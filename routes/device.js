@@ -16,16 +16,6 @@ module.exports = function(io) {
     io.on('connection', function(socket) {
         console.log("a user connected");
 
-        /*
-        client.smembersAsync("sensors").then((object) => {
-            var options = {};
-            for(var sid in object) {
-                options[object[sid]] = object[sid];
-            }
-            socket.emit("sensor_list", options);
-        });
-        */
-
         socket.on("data_request", function(data) {
             client.hgetallAsync("sensor:" + data.sid + ":" + data.mid).then((object) => {
                 socket.emit('data_response', object);

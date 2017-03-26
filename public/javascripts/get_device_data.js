@@ -33,18 +33,6 @@ $(document).ready(function () {
         return false;
     });
 
-    socket.on('sensor_list', function(data) {
-        $.each(data, function(key, value) {
-            $("#sid")
-                .append($("<option></option>")
-                    .attr("value", key)
-                    .text(value))
-        });
-        var sensor = $("#sid").find(":selected").text();
-        var measurement = $("#mid").find(":selected").text();
-        ask_for_data(sensor, measurement);
-    });
-
     socket.on('data_response', function(data) {
         var array = [];
         for (var key in data) {
