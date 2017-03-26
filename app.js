@@ -10,7 +10,6 @@ var socket_io = require("socket.io");
 var io = socket_io();
 app.io = io;
 
-var index = require('./routes/index');
 var device = require('./routes/device')(io);
 var devices = require('./routes/devices')();
 var locations = require('./routes/locations');
