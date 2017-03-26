@@ -31,7 +31,6 @@ module.exports = function(io) {
         
     });
 
-    /* GET devices listing. */
     router.get('/:device_id/:measurement_id', function(req, res, next) {
         client.smembersAsync("sensors").then((data) => {
             if (data.indexOf(req.params.device_id) != -1) {

@@ -1,8 +1,3 @@
-/*
-$("#sid").change(function(data) {
-    check_selected_sensor();
-});
-*/
 var socket;
 
 function ask_for_data(socket, sensor_id, measurement_id) {
