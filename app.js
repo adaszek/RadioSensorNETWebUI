@@ -12,7 +12,6 @@ app.io = io;
 
 var device = require('./routes/device')(io);
 var devices = require('./routes/devices')();
-var locations = require('./routes/locations');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +30,6 @@ app.use("/socket.io", express.static(path.join(__dirname, "node_modules/socket.i
 app.use('/', devices);
 app.use('/device', device);
 app.use('/devices', devices);
-app.use('/locations', locations);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
