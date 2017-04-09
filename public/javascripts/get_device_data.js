@@ -7,11 +7,14 @@ function ask_for_data(socket, sensor_id, measurement_id) {
     });
 }
 
+function data_req() {
+}
+
 $(document).ready(function () {
     socket = io("http://192.168.1.111:3000");
 
     var g3 = new Dygraph(document.getElementById("graphdiv3"), [], {
-        dateWindow: [Date.now() - 60000 * 60 * 2, Date.now()],
+        dateWindow: [Date.now() - 60000 * 60 * 24, Date.now()],
         //drawPoints: true,
         legend: "follow",
         fillGraph: true,
@@ -21,12 +24,14 @@ $(document).ready(function () {
         labels: ['Time', 'Measurement']
     })
 
+        /*
     $("#type_selection_form").submit(function() {
         var sensor = $("#sid").find(":selected").text();
         var measurement = $("#mid").find(":selected").text();
-        ask_for_data(sensor, measurement);
+        ask_for_data(socket, sensor, measurement);
         return false;
     });
+    */
 
     socket.on('data_response', function(data) {
         var array = [];
@@ -38,7 +43,8 @@ $(document).ready(function () {
         }
         g3.updateOptions({
             'file': array,
-            dateWindow: [Date.now() - 60000 * 60 * 2, Date.now()]
+            dateWindow: [Date.now() - 60000 * 60 * 24, Date.now()]
         });
     });
+
 });

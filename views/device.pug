@@ -11,10 +11,10 @@ mixin measurement_menu_element(measurement, actual, text)
 
 
 block append styles
-    link(rel="stylesheet" href="/dg/dygraph.css")
+    link(rel="stylesheet" href="/bower_components/dygraphs/css/dygraph.css")
 
 block append scripts
-    script(type="text/javascript" src="/dg/dygraph.js")
+    script(type="text/javascript" src="/bower_components/dygraphs/dist/dygraph.min.js")
     script(src="/socket.io/socket.io.js")
 
 block content
@@ -22,6 +22,7 @@ block content
     script.
         $(document).ready( () => {
             ask_for_data(socket, #{device_id}, '#{measurement_id}');
+            setInterval(ask_for_data, 5000, socket, #{device_id}, '#{measurement_id}');
         });
     .sensor_info
         h4: b Sensor #{device_id}

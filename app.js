@@ -24,8 +24,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use("/dg", express.static(path.join(__dirname, "node_modules/dygraphs/dist")));
 app.use("/socket.io", express.static(path.join(__dirname, "node_modules/socket.io-client/dist")));
+app.use("/bower_components", express.static(path.join(__dirname, "public/bower_components")));
 
 app.use('/', devices);
 app.use('/device', device);
