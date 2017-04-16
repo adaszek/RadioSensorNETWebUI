@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/socket.io", express.static(path.join(__dirname, "node_modules/socket.io-client/dist")));
-app.use("/bower_components", express.static(path.join(__dirname, "public/bower_components")));
+app.use("/jsmod", express.static(path.join(__dirname, "public/node_modules")));
 
 app.use('/', devices);
 app.use('/device', device);

@@ -11,14 +11,14 @@ mixin measurement_menu_element(measurement, actual, text)
 
 
 block append styles
-    link(rel="stylesheet" href="/bower_components/dygraphs/css/dygraph.css")
-    link(rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css")
+    link(rel="stylesheet" href="/jsmod/dygraphs/dist/dygraph.css")
+    link(rel="stylesheet" href="/jsmod/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css")
 
 block append scripts
-    script(type="text/javascript" src="/bower_components/dygraphs/dist/dygraph.min.js")
+    script(type="text/javascript" src="/jsmod/dygraphs/dist/dygraph.min.js")
     script(src="/socket.io/socket.io.js")
-    script(type="text/javascript" src="/bower_components/moment/min/moment.min.js")
-    script(type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js")
+    script(type="text/javascript" src="/jsmod/moment/min/moment.min.js")
+    script(type="text/javascript" src="/jsmod/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js")
 
 block content
     script(src="/javascripts/get_device_data.js")
