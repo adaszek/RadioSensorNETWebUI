@@ -11,7 +11,7 @@ function data_req() {
 }
 
 $(document).ready(function () {
-    socket = io("http://192.168.1.111:3000");
+    socket = io();
 
     var g3 = new Dygraph(document.getElementById("graphdiv3"), [], {
         dateWindow: [Date.now() - 60000 * 60 * 24, Date.now()],
