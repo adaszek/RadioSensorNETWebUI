@@ -29,14 +29,44 @@ block content
                 #{device_id},
                 '#{measurement_id}',
                 $('#datetimepicker1').data("DateTimePicker").date(),
-                $('#datetimepicker2').data("DateTimePicker").date(),
+                $('#datetimepicker2').data("DateTimePicker").date()
             );
-            console.log("update")
+            console.log("update");
+        }
+
+        var polling_id;
+
+        function deltaupdate() {
+            $('#datetimepicker2').data("DateTimePicker").date(moment());
+        }
+
+
+        function start_polling() {
+            deltaupdate();
+            polling_id = setInterval(
+                deltaupdate,
+                5000
+            );
+        }
+
+        function stop_polling() {
+            clearInterval(polling_id);
         }
 
         $(document).ready( () => {
             update();
+            $('#datetimepicker2').data("DateTimePicker").disable()
+            $('#pollenabler').click(() => {
+                if ($('#pollenabler').is(":checked")) {
+                    $('#datetimepicker2').data("DateTimePicker").disable()
+                    start_polling();
+                } else {
+                    $('#datetimepicker2').data("DateTimePicker").enable()
+                    stop_polling()
+                }
+            });
             $(document).find('body').on('dp.change', update);
+            start_polling();
         });
 
 
@@ -44,25 +74,33 @@ block content
         h4: b Sensor #{device_id}
         p Location: biuro
     .row
-        .col-md-7
+        .col-md-6
             ul(class="nav nav-pills")
                 +measurement_menu_element("temperature", measurement_id, "Temperature")
                 +measurement_menu_element("humidity", measurement_id, "Humidity")
                 +measurement_menu_element("voltage", measurement_id, "Voltage")
-        .col-md-1
-            p Select data range:
-        .col-md-2
-            .form-group
-                .input-group.date#datetimepicker1
-                    input(type='text' class="form-control")
-                    span(class="input-group-addon")
-                        span(class="glyphicon glyphicon-calendar")
-        .col-md-2
-            .form-group
-                .input-group.date#datetimepicker2
-                    input(type='text' class="form-control")
-                    span(class="input-group-addon")
-                        span(class="glyphicon glyphicon-calendar")
+        .col-md-6
+            .row
+                .col-sm-2
+                .col-sm-4
+                    .form-group
+                        .input-group.date#datetimepicker1
+                            .input-group-addon From
+                            input(type='text' class="form-control")
+                            span(class="input-group-addon")
+                                span(class="glyphicon glyphicon-calendar")
+                .col-sm-4
+                    .form-group
+                        .input-group.date#datetimepicker2
+                            .input-group-addon To
+                            input(type='text' class="form-control")
+                            span(class="input-group-addon")
+                                span(class="glyphicon glyphicon-calendar")
+                .col-sm-2
+                    .checkbox
+                        label 
+                            input#pollenabler(type="checkbox" checked)
+                            | Enable live data
     .row
         .col-md-12
             br

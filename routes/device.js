@@ -18,15 +18,17 @@ module.exports = function(io) {
         console.log("a user connected");
 
         socket.on("data_request", function(data) {
-            console.log("Asking for data from: " + moment(data.from).format() + " to: " + moment(data.to).format()); 
-            client.zrangebylexAsync("sensor:" + data.sid + ":" + data.mid + ":timestamps", "(" + moment(data.from).unix(), "(" + moment(data.to).unix()  ).then((timestamps) => {
-                client.hmgetAsync("sensor:" + data.sid + ":" + data.mid, timestamps).then((object) => {
-                    socket.emit('data_response', [timestamps, object]);
-                }).catch((e) => {
-                    console.log("error")
-                    console.log(e)
+            client.zrangebylexAsync("sensor:" + data.sid + ":" + data.mid + ":timestamps", "(" + moment(data.from).unix(), "(" + moment(data.to).unix())
+                .then((timestamps) => {
+                    client.hmgetAsync("sensor:" + data.sid + ":" + data.mid, timestamps)
+                        .then((object) => {
+                            socket.emit('data_response', [timestamps, object]);
+                        })
+                        .catch((e) => {
+                            console.log("error")
+                            console.log(e)
+                        });
                 });
-            });
         });
 
         socket.on("disconnect", function() {
