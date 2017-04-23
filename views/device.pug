@@ -24,8 +24,6 @@ block content
     script(src="/javascripts/get_device_data.js")
     script.
         $(document).ready( () => {
-            ask_for_data(socket, #{device_id}, '#{measurement_id}');
-            setInterval(ask_for_data, 5000, socket, #{device_id}, '#{measurement_id}');
             $('#datetimepicker1').datetimepicker({
                 locale: 'en-gb',
                 format: 'YYYY/MM/DD HH:mm',
@@ -40,10 +38,22 @@ block content
                 format: 'YYYY/MM/DD HH:mm',
                 showTodayButton: true,
                 useCurrent: true,
-                //defaultDate: Date.now(),
+                defaultDate: Date.now(),
                 showClear: true
                 //sideBySide: true
             });
+
+            console.log($('#datetimepicker1').data("DateTimePicker").date());
+            console.log($('#datetimepicker2').data("DateTimePicker").date());
+
+            ask_for_data(
+                socket,
+                #{device_id},
+                '#{measurement_id}',
+                $('#datetimepicker1').data("DateTimePicker").date(),
+                $('#datetimepicker2').data("DateTimePicker").date(),
+            );
+            //setInterval(ask_for_data, 5000, socket, #{device_id}, '#{measurement_id}');
         });
 
     .sensor_info

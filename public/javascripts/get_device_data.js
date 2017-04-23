@@ -1,9 +1,11 @@
 var socket;
 
-function ask_for_data(socket, sensor_id, measurement_id) {
+function ask_for_data(socket, sensor_id, measurement_id, from, to) {
     socket.emit('data_request', {
         "sid": sensor_id,
-        "mid": measurement_id
+        "mid": measurement_id,
+        "from": from,
+        "to": to
     });
 }
 
@@ -14,36 +16,19 @@ $(document).ready(function () {
     socket = io();
 
     var g3 = new Dygraph(document.getElementById("graphdiv3"), [], {
-        dateWindow: [Date.now() - 60000 * 60 * 24, Date.now()],
-        //drawPoints: true,
         legend: "follow",
         fillGraph: true,
         rollPeriod: 5,
         showRoller: true,
-        //showRangeSelector: true,
+        showRangeSelector: true,
         labels: ['Time', 'Measurement']
     })
 
-        /*
-    $("#type_selection_form").submit(function() {
-        var sensor = $("#sid").find(":selected").text();
-        var measurement = $("#mid").find(":selected").text();
-        ask_for_data(socket, sensor, measurement);
-        return false;
-    });
-    */
-
     socket.on('data_response', function(data) {
-        var array = [];
-        for (var key in data) {
-            array.push([
-                new Date(parseInt(key) * 1000),
-                parseFloat(data[key])
-            ]);
-        }
+        var graph_data = data[0].map((n, index) => [new Date(parseInt(n) * 1000), parseFloat(data[1][index])]);
+        console.log(graph_data)
         g3.updateOptions({
-            'file': array,
-            dateWindow: [Date.now() - 60000 * 60 * 24, Date.now()]
+            'file': graph_data,
         });
     });
 
