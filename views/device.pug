@@ -75,28 +75,30 @@ block content
         p Location: biuro
     .row
         .col-md-6
-            ul(class="nav nav-pills")
-                +measurement_menu_element("temperature", measurement_id, "Temperature")
-                +measurement_menu_element("humidity", measurement_id, "Humidity")
-                +measurement_menu_element("voltage", measurement_id, "Voltage")
+            .row
+                .col-md-12
+                    .mmenu
+                        ul(class="nav nav-pills")
+                            +measurement_menu_element("temperature", measurement_id, "Temperature")
+                            +measurement_menu_element("humidity", measurement_id, "Humidity")
+                            +measurement_menu_element("voltage", measurement_id, "Voltage")
         .col-md-6
             .row
-                .col-sm-2
-                .col-sm-4
+                .col-md-5
                     .form-group
                         .input-group.date#datetimepicker1
                             .input-group-addon From
                             input(type='text' class="form-control")
                             span(class="input-group-addon")
                                 span(class="glyphicon glyphicon-calendar")
-                .col-sm-4
+                .col-md-5
                     .form-group
                         .input-group.date#datetimepicker2
                             .input-group-addon To
                             input(type='text' class="form-control")
                             span(class="input-group-addon")
                                 span(class="glyphicon glyphicon-calendar")
-                .col-sm-2
+                .col-md-2
                     .checkbox
                         label 
                             input#pollenabler(type="checkbox" checked)
@@ -104,4 +106,4 @@ block content
     .row
         .col-md-12
             br
-            div(id="graphdiv3" style="width: 100%")
+            div(id="graphdiv3" style="width: 100%;")
