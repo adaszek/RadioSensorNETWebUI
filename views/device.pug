@@ -23,29 +23,7 @@ block append scripts
 block content
     script(src="/javascripts/get_device_data.js")
     script.
-        $(document).ready( () => {
-            $('#datetimepicker1').datetimepicker({
-                locale: 'en-gb',
-                format: 'YYYY/MM/DD HH:mm',
-                showTodayButton: true,
-                defaultDate: Date.now() - 60000 * 60 * 2,
-                showClear: true
-                //sideBySide: true
-            });
-
-            $('#datetimepicker2').datetimepicker({
-                locale: 'en-gb',
-                format: 'YYYY/MM/DD HH:mm',
-                showTodayButton: true,
-                useCurrent: true,
-                defaultDate: Date.now(),
-                showClear: true
-                //sideBySide: true
-            });
-
-            console.log($('#datetimepicker1').data("DateTimePicker").date());
-            console.log($('#datetimepicker2').data("DateTimePicker").date());
-
+        function update() {
             ask_for_data(
                 socket,
                 #{device_id},
@@ -53,8 +31,14 @@ block content
                 $('#datetimepicker1').data("DateTimePicker").date(),
                 $('#datetimepicker2').data("DateTimePicker").date(),
             );
-            //setInterval(ask_for_data, 5000, socket, #{device_id}, '#{measurement_id}');
+            console.log("update")
+        }
+
+        $(document).ready( () => {
+            update();
+            $(document).find('body').on('dp.change', update);
         });
+
 
     .sensor_info
         h4: b Sensor #{device_id}
